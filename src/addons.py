@@ -897,7 +897,18 @@ def get_data_dir(url):
 
 def get_global_cookies_file(force = False):
     if cookies_only_on_failure and not force: return None
+    # 1. Environment variable support (useful for cloud hosts like Render)
+    cookies_env = os.environ.get('YTDLP_COOKIES') or os.environ.get('COOKIES')
+    if cookies_env:
+        try:
+            with open('cookies.txt', 'w', encoding='utf-8') as f:
+                f.write(cookies_env)
+            return 'cookies.txt'
+        except Exception:
+            pass
+    # 2. Local cookies.txt file
     if os.path.exists('cookies.txt'): return 'cookies.txt'
+    if os.path.exists('../cookies.txt'): return '../cookies.txt'
     return None
 
 
