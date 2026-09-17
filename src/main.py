@@ -59,7 +59,21 @@ elif not ffmpeg:
 
 js_runtime = External.download_deno()
 
-ydl_global_opts = {'ffmpeg-location': ffmpeg, "noplaylist": True, 'playlistend': 0, "remote_components": ["ejs:github"], "concurrent_fragment_downloads": 2}
+player_clients_env = os.environ.get('YT_PLAYER_CLIENTS', 'android_vr,android,web_creator,ios')
+player_clients = [c.strip() for c in player_clients_env.split(',') if c.strip()]
+
+ydl_global_opts = {
+    'ffmpeg-location': ffmpeg,
+    'noplaylist': True,
+    'playlistend': 0,
+    'remote_components': ["ejs:github"],
+    'concurrent_fragment_downloads': 2,
+    'extractor_args': {
+        'youtube': {
+            'player_client': player_clients
+        }
+    }
+}
 if js_runtime:
     if 'deno' in js_runtime.lower() or 'deno' in subprocess.check_output([js_runtime, '--version']).decode().lower():
         ydl_global_opts["js_runtimes"] = {"deno": {"path": js_runtime}}
