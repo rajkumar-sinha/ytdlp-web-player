@@ -312,8 +312,22 @@ def cancel_download():
     return jsonify({"message": f"Cancelled {cancelled_count} ongoing processes"}), 200
 
 
+@app.before_request
+def handle_options():
+    if request.method == 'OPTIONS':
+        res = Response()
+        res.headers.add('Access-Control-Allow-Origin', '*')
+        res.headers.add('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, HEAD')
+        res.headers.add('Access-Control-Allow-Headers', 'Content-Type, Range, Authorization')
+        return res
+
+
 @app.after_request
 def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, HEAD')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Range, Authorization')
+    response.headers.add('Access-Control-Expose-Headers', 'Content-Range, Content-Length, Accept-Ranges')
     response.headers.add('Accept-Ranges', 'bytes')
     response.headers.add('Content-Security-Policy', "frame-src *")
     return response

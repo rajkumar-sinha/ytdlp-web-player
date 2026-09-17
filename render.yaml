@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: ytdlp-web-player
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: bash build.sh
+    startCommand: python src/main.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: WORKERS
+        value: "2"
+      - key: APP_TITLE
+        value: "YT-DLP Player"
+      - key: DISABLE_TRANSCODING
+        value: "false"
+      - key: COOKIES_ONLY_ON_FAILURE
+        value: "true"
